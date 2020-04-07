@@ -1,3 +1,43 @@
+.pagination-outer{
+    color: black !important;
+    text-align: center }
+.pagination{
+    display: inline-flex ;
+    position: relative ;
+}
+.pagination li a.page-link{
+    color: black ;
+    background-color: transparent;
+}
+.pagination li.active a.page-link,
+.pagination li a.page-link:hover,
+.pagination li.active a.page-link:hover{
+    color: white;
+    background-color: rgb(189, 4, 98);
+    border-color:rgb(189, 4, 98);
+}
+.pagination li:first-child a.page-link:hover,
+.pagination li:last-child a.page-link:hover{
+    box-shadow: 0 0 10px black;
+}
+.pagination li a.page-link:before{
+    content: attr(data-hover);
+    color: black;
+    font-size: 80px;
+    font-weight: 700;
+    height: 100%;
+    width: 100%;
+    opacity: 1;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    transition: all 0.3s ease 0s;
+}
+.pagination li a.page-link:hover:before,
+.pagination li.active a.page-link:before{
+    opacity: 1;
+    top: 10px;
+}
 html, body {
     width: 100%;
     height: 100%;

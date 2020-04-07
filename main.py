@@ -1,5 +1,6 @@
 from flask import Flask, flash, redirect,request,url_for,render_template,current_app,make_response,session,g
-from flask_login import LoginManager, UserMixin, login_user, current_user, login_required, logout_user  
+from flask_login import LoginManager, UserMixin, login_user, current_user, login_required, logout_user
+from flask_paginate import Pagination, get_page_args
 from werkzeug.utils import secure_filename
 import os
 import re
@@ -124,13 +125,13 @@ def leave_msg(user_id, msg):
 
 	return
 
-def get_top_msg(num):
+def get_top_msg(offset=0, num=5):
 	sql_cmd = """
 		SELECT *
 		from MSG_TBL
 		order by msg_id desc
-		limit {};
-	""".format(num)
+		offset {} limit {};
+	""".format(offset, num)
 
 	result = db.engine.execute(sql_cmd)
 	msg = []
@@ -150,7 +151,13 @@ def del_msg_by_id(msg_id):
 	""".format(msg_id)
 
 	db.engine.execute(sql_cmd)
-	return 
+	return
+
+def total_msg():
+	sql_cmd = """
+	SELECT COUNT(*) FROM MSG_TBL;
+	"""
+	return db.engine.execute(sql_cmd).fetchone()['count']
 
 @app.route('/')
 def index():
@@ -182,9 +189,17 @@ def index():
 @app.route('/msgboard', methods=['GET', 'POST'])
 def msgboard():	
 	#get message from data base
-	msg = get_top_msg(50)
+	page = int(request.args.get('page', 1))
+	per_page = 5
+	total = total_msg()
+	offset = (page-1) * per_page
+	msg = get_top_msg(offset,per_page)
+	pagination = Pagination(page=page, per_page=per_page, total=total,inner_window=1,outer_window=0,
+                            css_framework='bootstrap4')
 
-	return render_template('msgboard.html',messages=msg)
+	return render_template('msgboard.html',
+							messages=msg,
+							pagination=pagination)
 
 @app.route('/say', methods=['GET', 'POST'])
 def say():

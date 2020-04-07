@@ -10,7 +10,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
     <link rel="stylesheet" href="/static/styles/main.css">
-    <title>Upload</title>
+    <title>Message Board</title>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -50,7 +50,7 @@
      </div>
     </form>
   </div>
-  <div style="height:60%; width:70%;overflow:auto;background:#EEEEEE;margin:1% auto; padding:1% 1%; border-width:6px;border-style:dashed;border-color:#EEEEEE; ">
+  <div style="width:70%;background:#EEEEEE;margin:1% auto; padding:1% 1%; border-width:6px;border-style:dashed;border-color:#EEEEEE; ">
     {% for message in messages %}
         <div class="shadow p-3 mb-2 bg-white rounded" style="margin:1% 1%">
           <div class="media">
@@ -70,6 +70,8 @@
         </div>
     {% endfor %}
   </div>
+
+  <div class="text-center" style="width:100%">{{ pagination.links }}</div>
 </body>
 
 <footer id="footer" class=".navbar-fixed-bottom" style="height:100%;">
