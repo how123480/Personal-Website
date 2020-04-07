@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 import os
 import re
 import time
+from datetime import timedelta
 from PIL import Image
 
 #self implement
@@ -158,6 +159,11 @@ def total_msg():
 	SELECT COUNT(*) FROM MSG_TBL;
 	"""
 	return db.engine.execute(sql_cmd).fetchone()['count']
+
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
+    app.permanent_session_lifetime = timedelta(hours=1)
 
 @app.route('/')
 def index():
