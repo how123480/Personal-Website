@@ -72,6 +72,29 @@ def is_pw_correct(username,password):
 
 	return False
 
+def get_login_time():
+	username = current_user.get_id()
+	sql_cmd = """
+	SELECT login_time FROM USER_TBL WHERE username='{}';
+	""".format(username)
+
+	result = db.engine.execute(sql_cmd).fetchone()
+
+
+	return result['login_time']
+
+def set_login_time(login_time):
+	username = current_user.get_id()
+	sql_cmd = """
+		UPDATE USER_TBL
+		SET login_time={}
+		WHERE username='{}'
+	""".format(login_time,username)
+
+	db.engine.execute(sql_cmd)
+
+	return 
+
 def get_total_view():
 	sql_cmd = """
 		select var_val from GV where var_name='total_view';
@@ -261,7 +284,11 @@ def upload_img():
 		else:
 			return "Don't hack me, plz!!!!"
 
-	return render_template('upload.html', id=current_user.id, status = current_user.is_active)
+	login_time = get_login_time()
+	#login_time += 1
+	#set_login_time(login_time)
+
+	return render_template('upload.html', id=current_user.id, status = current_user.is_active, login_time = login_time)
 
 
 @app.route('/login', methods=['GET', 'POST'])  
@@ -281,7 +308,11 @@ def login():
 		user = User()  
 		user.id = account  
 		#  這邊，透過login_user來記錄user_id，如下了解程式碼的login_user說明。  
-		login_user(user)  
+		login_user(user)
+		# add login times
+		login_time = get_login_time()
+		login_time += 1
+		set_login_time(login_time)
 		 
 		return redirect(url_for('upload_img'))  
 	
