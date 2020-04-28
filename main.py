@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 import os
 import re
 import time
+import html
 from datetime import timedelta
 from PIL import Image
 
@@ -28,6 +29,9 @@ login_manager = LoginManager(app)
 def XSSsanitize(raw_string):
 	#1. filter out something wired
 	# do nothing now
+	#raw_string = raw_string.replace("\'", "&#39;")
+	raw_string = html.escape(raw_string)
+	raw_string = raw_string.replace("%", "%%")
 	return raw_string
 
 def sanitize(raw_string):
@@ -162,7 +166,7 @@ def get_top_msg(offset=0, num=5):
 	for row in result:
 		msg.append({
 			'user_id':row['user_id'],
-			'message':row['message'],
+			'message':html.unescape(row['message']),
 			'msg_id':row['msg_id'],
 			'author':row['author']
 			})
@@ -191,14 +195,7 @@ def make_session_permanent():
 @app.route('/')
 def index():
 	count = 0
-	"""
-	if(session.get('count',None)):
-		count = session['count'] + 1
-	else:
-		count = 1
-	session['count'] = count
-	"""
-	#total view
+	
 	total_view = 0
 	total_view = get_total_view() + 1
 	set_total_view(total_view)
